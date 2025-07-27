@@ -76,9 +76,8 @@ impl<'a, C: PixelColor> Image<'a, C> {
 	/// const IMAGE: Image<Color> =
 	/// 	unwrap_ctx!(Image::new(&IMAGE_DATA, &transparency![0, 0, 0, 1, 0], 3, 2));
 	/// ```
-
 	pub const fn new(colors: &'a [C], transparency: &'a [u8], width: u16, height: u16) -> Result<Self, Error> {
-		if colors.len() % width as usize != 0 {
+		if !colors.len().is_multiple_of(width as usize) {
 			return Err(Error::WrongPixelLength(Dimension::Width));
 		};
 		if colors.len() / width as usize != height as usize {
@@ -104,29 +103,29 @@ impl<'a, C: PixelColor> Image<'a, C> {
 /// The result is that the 3rd pixel is transparent, and all other pixels are opaque.
 #[macro_export]
 macro_rules! transparency {
-	($($x:expr),*) => {
-		{
-			const N: usize = [$($x),*].len();
-			const LEN: usize = N / 8 + if N % 8 > 0 { 1 } else { 0 };
-			const T: [u8; LEN] = {
-				let mut t = [0u8; LEN];
-				let mut i = 0;
-				let mut j = 7;
-				$(
-					t[i] |= ($x & 1 ) << j;
-					#[allow(unused_assignments)]
-					if j == 0 {
-						j = 7;
-						i += 1;
-					} else {
-						j -= 1;
-					}
-				)*
-					t
-			};
-			T
-		}
-	};
+    ($($x:expr),*) => {
+        {
+            const N: usize = [$($x),*].len();
+            const LEN: usize = N / 8 + if N % 8 > 0 { 1 } else { 0 };
+            const T: [u8; LEN] = {
+                let mut t = [0u8; LEN];
+                let mut i = 0;
+                let mut j = 7;
+                $(
+                    t[i] |= ($x & 1 ) << j;
+                    #[allow(unused_assignments)]
+                    if j == 0 {
+                        j = 7;
+                        i += 1;
+                    } else {
+                        j -= 1;
+                    }
+                )*
+                    t
+            };
+            T
+        }
+    };
 }
 
 #[cfg(test)]

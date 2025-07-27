@@ -1,6 +1,6 @@
 use crate::image::Image;
 use core::fmt::Debug;
-use embedded_graphics::{geometry::Point, pixelcolor::PixelColor, prelude::{DrawTarget, Size}, Drawable, Pixel};
+use embedded_graphics::{geometry::Point, pixelcolor::PixelColor, prelude::DrawTarget, Drawable, Pixel};
 
 /// A [`Sprite`] given a [`Image`](crate::image::Image) a postion and make it draw able.
 ///
