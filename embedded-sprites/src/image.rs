@@ -11,7 +11,7 @@ use embedded_graphics::pixelcolor::PixelColor;
 #[derive(Debug)]
 pub struct Image<'a, C: PixelColor> {
 	pub(crate) width: u16,
-	pub(crate) transparenty: &'a [u8],
+	pub(crate) transparency: &'a [u8],
 	pub(crate) colors: &'a [C],
 }
 
@@ -50,7 +50,7 @@ impl Error {
 }
 
 impl<'a, C: PixelColor> Image<'a, C> {
-	/// create a new [Image] from a array of [PixelColor]s, a transparenty map.
+	/// create a new [Image] from a array of [PixelColor]s, a transparency map.
 	///
 	/// Return an error, if the length of `colors` does not fit to the widht and height.
 	/// You can unwrap the error in a const contexts,
@@ -77,7 +77,7 @@ impl<'a, C: PixelColor> Image<'a, C> {
 	/// 	unwrap_ctx!(Image::new(&IMAGE_DATA, &transparency![0, 0, 0, 1, 0], 3, 2));
 	/// ```
 
-	pub const fn new(colors: &'a [C], transparenty: &'a [u8], width: u16, height: u16) -> Result<Self, Error> {
+	pub const fn new(colors: &'a [C], transparency: &'a [u8], width: u16, height: u16) -> Result<Self, Error> {
 		if colors.len() % width as usize != 0 {
 			return Err(Error::WrongPixelLength(Dimension::Width));
 		};
@@ -86,7 +86,7 @@ impl<'a, C: PixelColor> Image<'a, C> {
 		};
 		Ok(Image {
 			colors,
-			transparenty,
+			transparency,
 			width,
 		})
 	}

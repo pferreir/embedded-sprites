@@ -1,6 +1,6 @@
 use crate::image::Image;
 use core::fmt::Debug;
-use embedded_graphics::{geometry::Point, pixelcolor::PixelColor, prelude::DrawTarget, Drawable, Pixel};
+use embedded_graphics::{geometry::Point, pixelcolor::PixelColor, prelude::{DrawTarget, Size}, Drawable, Pixel};
 
 /// A [`Sprite`] given a [`Image`](crate::image::Image) a postion and make it draw able.
 ///
@@ -30,11 +30,11 @@ pub struct PixelIter<'a, C: PixelColor> {
 impl<'a, C: PixelColor> Iterator for PixelIter<'a, C> {
 	type Item = Pixel<C>;
 	fn next(&mut self) -> Option<Self::Item> {
-		// allow also empty / shorter transparenty map
+		// allow also empty / shorter transparency map
 		while self.next < self.tm_lengt
-			&& (self.sprite.image.transparenty[self.next / 8] & (0b10000000 >> (self.next % 8))) != 0
+			&& (self.sprite.image.transparency[self.next / 8] & (0b10000000 >> (self.next % 8))) != 0
 		{
-			// simple skipt transparenty pixel
+			// simple skipt transparency pixel
 			self.next += 1;
 		}
 		if self.next < self.sprite.image.colors.len() {
@@ -60,7 +60,7 @@ impl<'a, C: PixelColor> Drawable for Sprite<'a, C> {
 	{
 		target.draw_iter(PixelIter {
 			next: 0,
-			tm_lengt: self.image.transparenty.len() * 8,
+			tm_lengt: self.image.transparency.len() * 8,
 			sprite: self,
 		})
 	}
